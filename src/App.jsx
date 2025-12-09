@@ -9,18 +9,18 @@ import JournalForm from './components/JournalForm/JournalForm';
 import { useState } from 'react';
 
 const ENITIAL_DATA = [
-	// {
-	// 	id: 1,
-	// 	title: 'Подготовка к обновлению курсов',
-	// 	text: 'Горные походы открывают удивительные природные ландшафты',
-	// 	date: new Date(),
-	// },
-	// {
-	// 	id: 2,
-	// 	title: 'Поход в горы',
-	// 	text: 'Думал, что очень много време...',
-	// 	date: new Date(),
-	// },
+	{
+		id: 1,
+		title: 'Подготовка к обновлению курсов',
+		text: 'Горные походы открывают удивительные природные ландшафты',
+		date: new Date(),
+	},
+	{
+		id: 2,
+		title: 'Поход в горы',
+		text: 'Думал, что очень много време...',
+		date: new Date(),
+	},
 ];
 
 function App() {
@@ -32,8 +32,9 @@ function App() {
 			...note,
 			date: noteDateObj,
 			id:
-				(notes.length ? Math.max(...notes.map((noteItem) => noteItem.id)) : 0) +
-				1,
+				notes.length > 0
+					? Math.max(...notes.map((noteItem) => noteItem.id)) + 1
+					: 1,
 		};
 		setNotesData((oldNotes) => {
 			return [...oldNotes, objectNote];
