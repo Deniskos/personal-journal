@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import Button from '../Button/Button';
 
-import './styles.css';
+import styles from './styles.module.css';
+import cn from 'classnames';
 
 function JournalForm({ onSubmit }) {
 	const [formValidState, setFormValidState] = useState({
@@ -56,34 +57,53 @@ function JournalForm({ onSubmit }) {
 	};
 
 	return (
-		<form className="journal-form" onSubmit={addJournalItem}>
+		<form className={styles['journal-form']} onSubmit={addJournalItem}>
 			<input
 				type="text"
 				name="title"
 				value={titleText}
 				onChange={changeTitle}
-				style={{
-					borderColor: formValidState.title ? undefined : 'red',
-				}}
+				className={cn(styles.formItem, styles.title, {
+					[styles.invalid]: !formValidState.title,
+				})}
 			/>
-			<input
-				type="date"
-				name="date"
-				style={{
-					borderColor: formValidState.date ? undefined : 'red',
-				}}
-			/>
-			<input type="text" name="tag" />
+			<div>
+				<div className={styles.inputFieldWrapper}>
+					<label for="date" className={cn(styles.label, styles.dateLabel)}>
+						Дата
+					</label>
+					<input
+						id="date"
+						type="date"
+						name="date"
+						className={cn({
+							[styles.invalid]: !formValidState.date,
+						})}
+					/>
+				</div>
+
+				<div className={styles.inputFieldWrapper}>
+					<label for="tag" className={cn(styles.label, styles.tagLabel)}>
+						Метки
+					</label>
+					<input
+						id="tag"
+						type="text"
+						name="tag"
+						className={cn(styles.formItem, styles.tag)}
+					/>
+				</div>
+			</div>
 			<textarea
 				name="text"
 				id=""
 				cols="30"
-				rows="10"
-				style={{
-					borderColor: formValidState.text ? undefined : 'red',
-				}}
+				rows="25"
+				className={cn(styles.textarea, {
+					[styles.invalid]: !formValidState.text,
+				})}
 			></textarea>
-			<Button type="submit">Сохранить</Button>
+			<Button>Сохранить</Button>
 		</form>
 	);
 }
