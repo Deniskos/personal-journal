@@ -9,21 +9,6 @@ import JournalList from './components/JournalList/JournalList';
 import './App.css';
 import JournalForm from './components/JournalForm/JournalForm';
 
-// const ENITIAL_DATA = [
-// 	{
-// 		id: 1,
-// 		title: 'Подготовка к обновлению курсов',
-// 		text: 'Горные походы открывают удивительные природные ландшафты',
-// 		date: new Date(),
-// 	},
-// 	{
-// 		id: 2,
-// 		title: 'Поход в горы',
-// 		text: 'Думал, что очень много време...',
-// 		date: new Date(),
-// 	},
-// ];
-
 function App() {
 	const [notes, setNotesData] = useState([]);
 
@@ -39,6 +24,13 @@ function App() {
 			);
 		}
 	}, []);
+
+	useEffect(() => {
+		if (notes.length) {
+			console.log(notes);
+			localStorage.setItem('data', JSON.stringify(notes));
+		}
+	}, [notes]);
 
 	const addNote = (note) => {
 		const noteDateObj = new Date(note.date);

@@ -1,4 +1,4 @@
-.journal-form {
+.journalForm {
 	display: flex;
 	width: 100%;
 	flex-direction: column;
@@ -12,6 +12,7 @@
 .formItem {
 	border: none;
 	background-color: transparent;
+	color: white;
 }
 
 .title {
