@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import Button from '../Button/Button';
 
 import styles from './styles.module.css';
@@ -7,17 +7,32 @@ import { formReducer, INITIAL_STATE, actionTypes } from './state';
 
 function JournalForm({ onSubmit }) {
 	const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
-
 	const { isValid, values, isFormReadyForSubmit } = formState || {};
+	const titleRef = useRef();
+	const dateRef = useRef();
+	const textRef = useRef();
+
+	const focusError = (isValid) => {
+		switch (true) {
+			case !isValid.title:
+				titleRef.current.focus();
+				break;
+			case !isValid.date:
+				dateRef.current.focus();
+				break;
+			case !isValid.text:
+				textRef.current.focus();
+		}
+	};
 
 	useEffect(() => {
 		let timer;
 		if (!isValid.date || !isValid.title || !isValid.text) {
+			focusError(isValid);
 			timer = setTimeout(() => {
 				dispatchForm({ type: actionTypes.RESET_VALIDITY });
 			}, 2000);
 		}
-
 		return () => {
 			clearTimeout(timer);
 		};
@@ -28,13 +43,11 @@ function JournalForm({ onSubmit }) {
 			onSubmit(values);
 			dispatchForm({ type: actionTypes.CLEAR }); // очистка формы
 		}
-	}, [isFormReadyForSubmit]);
+	}, [isFormReadyForSubmit, values, onSubmit]);
 
 	const addJournalItem = (e) => {
 		e.preventDefault();
-		const formData = new FormData(e.target);
-		const formProps = Object.fromEntries(formData);
-		dispatchForm({ type: actionTypes.SUBMIT, payload: formProps });
+		dispatchForm({ type: actionTypes.SUBMIT, payload: values });
 	};
 
 	const changeValue = (event) => {
@@ -51,6 +64,7 @@ function JournalForm({ onSubmit }) {
 			<input
 				type="text"
 				name="title"
+				ref={titleRef}
 				value={values.title}
 				onChange={changeValue}
 				className={cn(styles.formItem, styles.title, {
@@ -66,6 +80,7 @@ function JournalForm({ onSubmit }) {
 						id="date"
 						type="date"
 						name="date"
+						ref={dateRef}
 						value={values.date}
 						onChange={changeValue}
 						className={cn(styles.formItem, {
@@ -94,6 +109,7 @@ function JournalForm({ onSubmit }) {
 				id=""
 				cols="30"
 				rows="25"
+				ref={textRef}
 				value={values.text}
 				onChange={changeValue}
 				className={cn(styles.textarea, styles.formItem, {

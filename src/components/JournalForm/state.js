@@ -7,15 +7,15 @@ export const actionTypes = {
 
 export const INITIAL_STATE = {	
 	values: {
-		text: '',
 		title: '',
-		date: '',
 		tag: '',
+		date: '',		
+		text: '',
 	},
 	isValid: {
-		text: true,
-		title: true,
 		date: true,
+		title: true,
+		text: true,	
 	},
 	isFormReadyForSubmit: false
 };
@@ -47,6 +47,6 @@ export const formReducer = (state, action) => {
 		};
 	};
 	case actionTypes.CLEAR:
-		return {...state, values: INITIAL_STATE.values};
+		return {...state, values: INITIAL_STATE.values, isFormReadyForSubmit: false};
 	}	
 };
