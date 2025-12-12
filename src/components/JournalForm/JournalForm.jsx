@@ -3,7 +3,7 @@ import Button from '../Button/Button';
 
 import styles from './styles.module.css';
 import cn from 'classnames';
-import { formReducer, INITIAL_STATE } from './state';
+import { formReducer, INITIAL_STATE, actionTypes } from './state';
 
 function JournalForm({ onSubmit }) {
 	const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
@@ -14,7 +14,7 @@ function JournalForm({ onSubmit }) {
 		let timer;
 		if (!isValid.date || !isValid.title || !isValid.text) {
 			timer = setTimeout(() => {
-				dispatchForm({ type: 'RESET_VALIDITY' });
+				dispatchForm({ type: actionTypes.RESET_VALIDITY });
 			}, 2000);
 		}
 
@@ -26,7 +26,7 @@ function JournalForm({ onSubmit }) {
 	useEffect(() => {
 		if (isFormReadyForSubmit) {
 			onSubmit(values);
-			dispatchForm({ type: 'CLEAR' }); // очистка формы
+			dispatchForm({ type: actionTypes.CLEAR }); // очистка формы
 		}
 	}, [isFormReadyForSubmit]);
 
@@ -34,9 +34,16 @@ function JournalForm({ onSubmit }) {
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		const formProps = Object.fromEntries(formData);
-		dispatchForm({ type: 'SUBMIT', payload: formProps });
-		// dispatchForm({ type: 'CLEAR' }); // очистка формы
-		e.target.reset();
+		dispatchForm({ type: actionTypes.SUBMIT, payload: formProps });
+	};
+
+	const changeValue = (event) => {
+		dispatchForm({
+			type: actionTypes.CHANGE_VALUE,
+			payload: {
+				[event.target.name]: event.target.value,
+			},
+		});
 	};
 
 	return (
@@ -44,6 +51,8 @@ function JournalForm({ onSubmit }) {
 			<input
 				type="text"
 				name="title"
+				value={values.title}
+				onChange={changeValue}
 				className={cn(styles.formItem, styles.title, {
 					[styles.invalid]: !isValid.title,
 				})}
@@ -57,6 +66,8 @@ function JournalForm({ onSubmit }) {
 						id="date"
 						type="date"
 						name="date"
+						value={values.date}
+						onChange={changeValue}
 						className={cn(styles.formItem, {
 							[styles.invalid]: !isValid.date,
 						})}
@@ -71,6 +82,8 @@ function JournalForm({ onSubmit }) {
 						id="tag"
 						type="text"
 						name="tag"
+						value={values.tag}
+						onChange={changeValue}
 						className={cn(styles.formItem, styles.tag)}
 					/>
 				</div>
@@ -81,6 +94,8 @@ function JournalForm({ onSubmit }) {
 				id=""
 				cols="30"
 				rows="25"
+				value={values.text}
+				onChange={changeValue}
 				className={cn(styles.textarea, styles.formItem, {
 					[styles.invalid]: !isValid.text,
 				})}

@@ -1,3 +1,10 @@
+export const actionTypes = {
+	RESET_VALIDITY:  'RESET_VALIDITY',
+	CHANGE_VALUE: 'CHANGE_VALUE',
+	SUBMIT: 'SUBMIT',
+	CLEAR: 'CLEAR',
+};
+
 export const INITIAL_STATE = {	
 	values: {
 		text: '',
@@ -14,17 +21,23 @@ export const INITIAL_STATE = {
 };
 
 export const formReducer = (state, action) => {
+	const {payload} = action;
 	switch(action.type) {
-	case 'RESET_VALIDITY':
+	case actionTypes.RESET_VALIDITY:
 		return {...state, isValid: INITIAL_STATE.isValid};
-	case 'SUBMIT': {
-		const {payload} = action;
-		const isTextValidity = Boolean(payload.text);
-		const isTitleValidity = Boolean(payload.title);
-		const isDateValidity = Boolean(payload.date);
+	case actionTypes.CHANGE_VALUE: {
+		return {
+			...state,
+			values: {...state.values, ...payload},
+		};	
+	}		
+	case actionTypes.SUBMIT: {		
+		const isTextValidity = state.values.text.trim().length;
+		const isTitleValidity = state.values.title.trim().length;
+		const isDateValidity = state.values.date;
 
 		return {
-			values: action.payload,
+			...state,
 			isValid: {
 				text: isTextValidity,
 				title: isTitleValidity,
@@ -33,7 +46,7 @@ export const formReducer = (state, action) => {
 			isFormReadyForSubmit: isTextValidity && isTitleValidity && isDateValidity,
 		};
 	};
-	case 'CLEAR':
+	case actionTypes.CLEAR:
 		return {...state, values: INITIAL_STATE.values};
-	}
+	}	
 };
