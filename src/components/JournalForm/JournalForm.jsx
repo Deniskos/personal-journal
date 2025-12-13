@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useRef } from 'react';
 import Button from '../Button/Button';
+import Input from '../Input/Input';
 
 import styles from './styles.module.css';
 import cn from 'classnames';
@@ -61,45 +62,42 @@ function JournalForm({ onSubmit }) {
 
 	return (
 		<form className={styles.journalForm} onSubmit={addJournalItem}>
-			<input
-				type="text"
-				name="title"
+			<Input
 				ref={titleRef}
+				kind="title"
+				name="title"
+				type="text"
 				value={values.title}
 				onChange={changeValue}
-				className={cn(styles.formItem, styles.title, {
-					[styles.invalid]: !isValid.title,
-				})}
+				isValid={isValid.title}
 			/>
 			<div>
 				<div className={styles.inputFieldWrapper}>
-					<label for="date" className={cn(styles.label, styles.dateLabel)}>
+					<label htmlFor="date" className={cn(styles.label, styles.dateLabel)}>
 						Дата
 					</label>
-					<input
+					<Input
 						id="date"
 						type="date"
 						name="date"
 						ref={dateRef}
 						value={values.date}
 						onChange={changeValue}
-						className={cn(styles.formItem, {
-							[styles.invalid]: !isValid.date,
-						})}
+						isValid={isValid.date}
 					/>
 				</div>
 
 				<div className={styles.inputFieldWrapper}>
-					<label for="tag" className={cn(styles.label, styles.tagLabel)}>
+					<label htmlFor="tag" className={cn(styles.label, styles.tagLabel)}>
 						Метки
 					</label>
-					<input
+					<Input
 						id="tag"
+						kind="tag"
 						type="text"
 						name="tag"
 						value={values.tag}
 						onChange={changeValue}
-						className={cn(styles.formItem, styles.tag)}
 					/>
 				</div>
 			</div>

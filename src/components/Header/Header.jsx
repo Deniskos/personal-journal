@@ -1,7 +1,7 @@
-import './styles.css';
+import styles from './styles.module.css';
 
 function Header() {
-	return <img className="logo" src="/logo.svg" alt="Логотип журнала" />;
+	return <img className={styles.logo} src="/logo.svg" alt="Логотип журнала" />;
 }
 
 export default Header;
