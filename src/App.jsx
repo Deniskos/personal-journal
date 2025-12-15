@@ -1,49 +1,37 @@
-import { useEffect, useState } from 'react';
+import { useLocalStorage } from '../src/hooks/useLocalstorage';
 
 import JournalAddButton from './components/JournalAddButton/JournalAddButton';
 import LeftPanel from './layouts/LeftPanel/LeftPanel';
 import Body from './layouts/Body/Body';
 import Header from './components/Header/Header';
 import JournalList from './components/JournalList/JournalList';
-
-import './App.css';
 import JournalForm from './components/JournalForm/JournalForm';
 
+import './App.css';
+
+function mapItems(items) {
+	if (!items) {
+		return [];
+	}
+	return items.map((i) => ({
+		...i,
+		date: new Date(i.date),
+	}));
+}
+
 function App() {
-	const [notes, setNotesData] = useState([]);
+	const [items, setItems] = useLocalStorage('data');
 
-	useEffect(() => {
-		const data = JSON.parse(localStorage.getItem('data'));
-
-		if (data) {
-			setNotesData(
-				data.map((item) => ({
-					...item,
-					date: new Date(item.date),
-				}))
-			);
-		}
-	}, []);
-
-	useEffect(() => {
-		if (notes.length) {
-			localStorage.setItem('data', JSON.stringify(notes));
-		}
-	}, [notes]);
-
-	const addNote = (note) => {
-		const noteDateObj = new Date(note.date);
-		const objectNote = {
-			...note,
-			date: noteDateObj,
-			id:
-				notes.length > 0
-					? Math.max(...notes.map((noteItem) => noteItem.id)) + 1
-					: 1,
-		};
-		setNotesData((oldNotes) => {
-			return [...oldNotes, objectNote];
-		});
+	const addItem = (item) => {
+		setItems([
+			...mapItems(items),
+			{
+				title: item.title,
+				text: item.text,
+				date: new Date(item.date),
+				id: items?.length > 0 ? Math.max(...items.map((i) => i.id)) + 1 : 1,
+			},
+		]);
 	};
 
 	return (
@@ -51,10 +39,10 @@ function App() {
 			<LeftPanel>
 				<Header />
 				<JournalAddButton />
-				<JournalList items={notes} />
+				<JournalList items={mapItems(items)} />
 			</LeftPanel>
 			<Body>
-				<JournalForm onSubmit={addNote} />
+				<JournalForm onSubmit={addItem} />
 			</Body>
 		</div>
 	);

@@ -4,7 +4,7 @@ import CardButton from '../CardButton/CardButton';
 import './styles.css';
 
 function JournalList({ items }) {
-	if (items.length === 0) {
+	if (items?.length === 0) {
 		return <p>У вас нет ни одной записи</p>;
 	}
 
@@ -18,7 +18,7 @@ function JournalList({ items }) {
 
 	return (
 		<div className="journal-list">
-			{items.sort(dataSort).map((item) => {
+			{items?.sort(dataSort).map((item) => {
 				return (
 					<CardButton key={item.id}>
 						<JournalItem data={item} />
