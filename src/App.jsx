@@ -6,6 +6,7 @@ import Body from './layouts/Body/Body';
 import Header from './components/Header/Header';
 import JournalList from './components/JournalList/JournalList';
 import JournalForm from './components/JournalForm/JournalForm';
+import AutoCounter from './components/Test/AutoCounter';
 
 import './App.css';
 

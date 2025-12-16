@@ -13,14 +13,13 @@ const useLocalStorage = (key, initialValue) => {
 		}
 	});
 
-	const setValue = (data) => {
+	const setValue = (newValue) => {
 		try {
-			localStorage.setItem(key, JSON.stringify(data));
+			localStorage.setItem(key, JSON.stringify(newValue));
+			setData(newValue);
 		} catch (e) {
 			console.error(e);
 		}
-
-		setData(data);
 	};
 
 	return [value, setValue];
