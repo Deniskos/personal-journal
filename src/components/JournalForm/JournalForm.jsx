@@ -1,14 +1,16 @@
-import { useEffect, useReducer, useRef } from 'react';
+import { useContext, useEffect, useReducer, useRef } from 'react';
 import Button from '../Button/Button';
 import Input from '../Input/Input';
 
 import styles from './styles.module.css';
 import cn from 'classnames';
 import { formReducer, INITIAL_STATE, actionTypes } from './state';
+import { UserContext } from '../../context/User.context';
 
 function JournalForm({ onSubmit }) {
 	const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
 	const { isValid, values, isFormReadyForSubmit } = formState || {};
+	const { userId } = useContext(UserContext);
 	const titleRef = useRef();
 	const dateRef = useRef();
 	const textRef = useRef();
@@ -41,10 +43,10 @@ function JournalForm({ onSubmit }) {
 
 	useEffect(() => {
 		if (isFormReadyForSubmit) {
-			onSubmit(values);
+			onSubmit({ userId, ...values });
 			dispatchForm({ type: actionTypes.CLEAR }); // очистка формы
 		}
-	}, [isFormReadyForSubmit, values, onSubmit]);
+	}, [isFormReadyForSubmit, values, onSubmit, userId]);
 
 	const addJournalItem = (e) => {
 		e.preventDefault();
@@ -110,7 +112,7 @@ function JournalForm({ onSubmit }) {
 				ref={textRef}
 				value={values.text}
 				onChange={changeValue}
-				className={cn(styles.textarea, styles.formItem, {
+				className={cn(styles.textarea, {
 					[styles.invalid]: !isValid.text,
 				})}
 			></textarea>

@@ -8,6 +8,7 @@ import JournalList from './components/JournalList/JournalList';
 import JournalForm from './components/JournalForm/JournalForm';
 
 import './App.css';
+import UserContextProvider from './context/User.context';
 
 function mapItems(items) {
 	if (!items) {
@@ -26,6 +27,7 @@ function App() {
 		setItems([
 			...mapItems(items),
 			{
+				...item,
 				title: item.title,
 				text: item.text,
 				date: new Date(item.date),
@@ -35,16 +37,18 @@ function App() {
 	};
 
 	return (
-		<div className="app">
-			<LeftPanel>
-				<Header />
-				<JournalAddButton />
-				<JournalList items={mapItems(items)} />
-			</LeftPanel>
-			<Body>
-				<JournalForm onSubmit={addItem} />
-			</Body>
-		</div>
+		<UserContextProvider>
+			<div className="app">
+				<LeftPanel>
+					<Header />
+					<JournalAddButton />
+					<JournalList items={mapItems(items)} />
+				</LeftPanel>
+				<Body>
+					<JournalForm onSubmit={addItem} />
+				</Body>
+			</div>
+		</UserContextProvider>
 	);
 }
 
