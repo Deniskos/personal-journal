@@ -6,27 +6,41 @@ import styles from './styles.module.css';
 import cn from 'classnames';
 import { formReducer, INITIAL_STATE, actionTypes } from './state';
 import { UserContext } from '../../context/User.context';
+import { EditContext } from '../../context/Edit.context';
+import { formatDateForInput } from '../../helpers/formatDateForInput';
+import { useLocalStorage } from '../../hooks/useLocalstorage';
+import { convertDatesForClient } from '../../helpers/convertDatesForClient';
 
 function JournalForm({ onSubmit }) {
 	const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
+
 	const { isValid, values, isFormReadyForSubmit } = formState || {};
 	const { userId } = useContext(UserContext);
+	const { editItemId, setEditItemId, isEditMode, setIsEditMode } =
+		useContext(EditContext);
+	const [items] = useLocalStorage('data', isEditMode);
 	const titleRef = useRef();
 	const dateRef = useRef();
 	const textRef = useRef();
 
-	const focusError = (isValid) => {
-		switch (true) {
-			case !isValid.title:
-				titleRef.current.focus();
-				break;
-			case !isValid.date:
-				dateRef.current.focus();
-				break;
-			case !isValid.text:
-				textRef.current.focus();
+	useEffect(() => {
+		// режим редактирования заметки
+		if (isEditMode) {
+			dispatchForm({
+				type: actionTypes.SET_EDIT_JOURNAL_ITEM,
+				payload: {
+					...convertDatesForClient(items)
+						.filter((item) => item.id === editItemId)
+						.map((item) => {
+							return {
+								...item,
+								date: formatDateForInput(item.date),
+							};
+						})[0],
+				},
+			});
 		}
-	};
+	}, [isEditMode, editItemId, items]);
 
 	useEffect(() => {
 		let timer;
@@ -43,10 +57,25 @@ function JournalForm({ onSubmit }) {
 
 	useEffect(() => {
 		if (isFormReadyForSubmit) {
-			onSubmit({ userId, ...values });
+			onSubmit({ userId, ...values }, isEditMode);
 			dispatchForm({ type: actionTypes.CLEAR }); // очистка формы
+			setEditItemId(null);
+			setIsEditMode(false);
 		}
 	}, [isFormReadyForSubmit, values, onSubmit, userId]);
+
+	const focusError = (isValid) => {
+		switch (true) {
+			case !isValid.title:
+				titleRef.current.focus();
+				break;
+			case !isValid.date:
+				dateRef.current.focus();
+				break;
+			case !isValid.text:
+				textRef.current.focus();
+		}
+	};
 
 	const addJournalItem = (e) => {
 		e.preventDefault();
@@ -117,7 +146,7 @@ function JournalForm({ onSubmit }) {
 				})}
 			></textarea>
 
-			<Button>Сохранить</Button>
+			<Button>{isEditMode ? 'Сохранить изменения' : 'Сохранить'}</Button>
 		</form>
 	);
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export function useLocalStorage(key) {
+export function useLocalStorage(key, isEditMode) {
 	const [data, setData] = useState();
 
 	useEffect(() => {
@@ -9,7 +9,7 @@ export function useLocalStorage(key) {
 		if (response) {
 			setData(response);			
 		}
-	}, []);
+	}, [isEditMode]);
     
 	const saveData = (newData) => {
 		localStorage.setItem(key, JSON.stringify(newData));

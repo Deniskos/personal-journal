@@ -25,7 +25,7 @@ function JournalList({ items }) {
 				?.filter((item) => item.userId === userId)
 				.sort(dataSort)
 				.map((item) => (
-					<CardButton key={item.id}>
+					<CardButton journalId={item.id} key={item.id}>
 						<JournalItem data={item} />
 					</CardButton>
 				))}

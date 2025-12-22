@@ -3,6 +3,7 @@ export const actionTypes = {
 	CHANGE_VALUE: 'CHANGE_VALUE',
 	SUBMIT: 'SUBMIT',
 	CLEAR: 'CLEAR',
+	SET_EDIT_JOURNAL_ITEM: 'SET_EDIT_JOURNAL_ITEM',
 };
 
 export const INITIAL_STATE = {	
@@ -48,5 +49,7 @@ export const formReducer = (state, action) => {
 		};
 		case actionTypes.CLEAR:
 			return {...state, values: INITIAL_STATE.values, isFormReadyForSubmit: false};
+		case actionTypes.SET_EDIT_JOURNAL_ITEM:
+			return {...INITIAL_STATE, values: {...payload}};	
 	}	
 };
