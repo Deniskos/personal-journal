@@ -11,7 +11,7 @@ import { formatDateForInput } from '../../helpers/formatDateForInput';
 import { useLocalStorage } from '../../hooks/useLocalstorage';
 import { convertDatesForClient } from '../../helpers/convertDatesForClient';
 
-function JournalForm({ onSubmit }) {
+function JournalForm({ onSubmit, deleteNote }) {
 	const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
 
 	const { isValid, values, isFormReadyForSubmit } = formState || {};
@@ -39,6 +39,8 @@ function JournalForm({ onSubmit }) {
 						})[0],
 				},
 			});
+		} else {
+			dispatchForm({ type: actionTypes.CLEAR });
 		}
 	}, [isEditMode, editItemId, items]);
 
@@ -57,7 +59,7 @@ function JournalForm({ onSubmit }) {
 
 	useEffect(() => {
 		if (isFormReadyForSubmit) {
-			onSubmit({ userId, ...values }, isEditMode);
+			onSubmit({ userId, ...values });
 			dispatchForm({ type: actionTypes.CLEAR }); // очистка формы
 			setEditItemId(null);
 			setIsEditMode(false);
@@ -93,15 +95,23 @@ function JournalForm({ onSubmit }) {
 
 	return (
 		<form className={styles.journalForm} onSubmit={addJournalItem}>
-			<Input
-				ref={titleRef}
-				kind="title"
-				name="title"
-				type="text"
-				value={values.title}
-				onChange={changeValue}
-				isValid={isValid.title}
-			/>
+			<div>
+				<Input
+					ref={titleRef}
+					kind="title"
+					name="title"
+					type="text"
+					value={values.title}
+					onChange={changeValue}
+					isValid={isValid.title}
+				/>
+				{editItemId && (
+					<button
+						onClick={() => deleteNote(editItemId)}
+						className={styles.delete}
+					/>
+				)}
+			</div>
 			<div>
 				<div className={styles.inputFieldWrapper}>
 					<label htmlFor="date" className={cn(styles.label, styles.dateLabel)}>

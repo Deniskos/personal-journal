@@ -7,6 +7,19 @@
 	& button {
 		width: max-content;
 	}
+
+	& .delete {
+		position: absolute;
+		left: calc(100% - 80px);
+		width: 30px;
+		height: 30px;
+		border: none;
+		background-image: url(./delete.svg);
+		background-repeat: no-repeat;
+		background-size: 30px 30px;
+		background-color: transparent;
+		cursor: pointer;
+	}
 }
 
 .title {

@@ -1,4 +1,4 @@
-// import { useContext } from 'react';
+import { useContext } from 'react';
 import { useLocalStorage } from '../src/hooks/useLocalstorage';
 
 import JournalAddButton from './components/JournalAddButton/JournalAddButton';
@@ -10,7 +10,7 @@ import JournalForm from './components/JournalForm/JournalForm';
 
 import './App.css';
 import UserContextProvider from './context/User.context';
-import EditContextProvider from './context/Edit.context';
+import { EditContext } from './context/Edit.context';
 import { convertDatesForClient } from './helpers/convertDatesForClient';
 
 // function mapItems(items) {
@@ -24,10 +24,10 @@ import { convertDatesForClient } from './helpers/convertDatesForClient';
 // }
 
 function App() {
+	const { isEditMode } = useContext(EditContext);
 	const [items, saveData] = useLocalStorage('data');
-	// const { setIsEditMode, isEditMode } = useContext(EditContext);
 
-	const submitItem = (sentItem, isEditMode) => {
+	const submitItem = (sentItem) => {
 		let submitData = [];
 
 		if (isEditMode) {
@@ -57,20 +57,27 @@ function App() {
 		saveData(submitData);
 	};
 
+	const deleteNote = (editItemId) => {
+		console.log('delete', editItemId);
+		saveData([
+			...items.filter((item) => {
+				return item.id !== editItemId;
+			}),
+		]);
+	};
+
 	return (
 		<UserContextProvider>
-			<EditContextProvider>
-				<div className="app">
-					<LeftPanel>
-						<Header />
-						<JournalAddButton />
-						<JournalList items={convertDatesForClient(items)} />
-					</LeftPanel>
-					<Body>
-						<JournalForm onSubmit={submitItem} />
-					</Body>
-				</div>
-			</EditContextProvider>
+			<div className="app">
+				<LeftPanel>
+					<Header />
+					<JournalAddButton />
+					<JournalList items={convertDatesForClient(items)} />
+				</LeftPanel>
+				<Body>
+					<JournalForm onSubmit={submitItem} deleteNote={deleteNote} />
+				</Body>
+			</div>
 		</UserContextProvider>
 	);
 }

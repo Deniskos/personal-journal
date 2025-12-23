@@ -6,6 +6,8 @@ import { useContext } from 'react';
 import { UserContext } from '../../context/User.context';
 
 function JournalList({ items }) {
+	console.log('JournalList-items', items);
+
 	const { userId } = useContext(UserContext);
 	if (items?.length === 0) {
 		return <p>У вас нет ни одной записи</p>;
