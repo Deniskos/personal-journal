@@ -10,7 +10,7 @@ export default defineConfig([
 		files: ['**/*.{js,jsx}'],
 		extends: [
 			js.configs.recommended,
-reactHooks.configs.flat.recommended,
+			reactHooks.configs.flat.recommended,
 			reactRefresh.configs.vite
 		],
 		languageOptions: {
@@ -28,7 +28,10 @@ reactHooks.configs.flat.recommended,
 			//   'comma-dangle': ['error', 'never'],
 			quotes: ['error', 'single'  ],
 			'react/prop-types': [0],
-			'indent': ['error', 'tab']
+			 'indent': ['error', 'tab', {
+				'ignoredNodes': ['JSXElement'],
+				'SwitchCase': 1
+			}]
 		}
 	}
 ]);
